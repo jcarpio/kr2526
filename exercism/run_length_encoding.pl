@@ -81,7 +81,8 @@ create_elem_string(1, Elem, R2):- atom_chars(Elem, R), string_chars(R2, R).
    R = "WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB"
 */
 
-decode(SmallString, SmallChars):- string_chars(SmallString, SmallChars).
+decode(SmallString, R2):- string_chars(SmallString, SmallChars),
+      create_sub_lists(SmallChars, R), decode_list(R, R2).
 
 /*
    decode_list_pairs(+SmallString, -BigString)
@@ -90,9 +91,57 @@ decode(SmallString, SmallChars):- string_chars(SmallString, SmallChars).
    R = [12-W, 1-B, 12-W, 3-B, 24-W, 1-B]
 */
 
-encode_list_pairs([Head1, Head2|Tail], 
 
 
+is_number_char(Char):- char_code(Char, N), N >= 48, N =< 57.
 
+/*
+create_sub_lists(+CharList, -R)
+  es cierto si R unifica con una lista con el siguiente formato:
+  create_sub_lists([1,2,'W','B',1,2,'W',3,'B',2,4,'W','B'], R)
+  R =[ [1,2], ['W'], ['B'], [1,2], ['W'], [3], ['B'], [2,4], ['W'], ['B']]  
+*/
+
+create_sub_lists([], []).
+
+create_sub_lists([Elem], [[Elem]]).
+
+create_sub_lists([Head1, Head2|Tail], [[Head1|List]|R]):- is_number_char(Head1, Head2), 
+ create_sub_lists([Head2|Tail], [List|R]).
+ 
+create_sub_lists([Head1, Head2|Tail], [[Head1]|R]):- \+ is_number_char(Head1, Head2),
+ create_sub_lists([Head2|Tail], R).
+ 
+is_number_char(Char1, Char2):- is_number_char(Char1), is_number_char(Char2). 
+  
+ 
+decode_list([], "").
+decode_list([Char], R):- string_chars(R, Char).
+decode_list([[Head1|Tail1], [Head2]|Tail], R):- is_number_char(Head1), 
+                                      number_chars(N, [Head1|Tail1]),
+									  create_string_repeat(N, Head2, HeadString),
+									  decode_list(Tail, TailString),
+									  string_concat(HeadString, TailString, R).
+									  
+decode_list([[Head1]|Tail], R):- \+ is_number_char(Head1), 
+						  string_chars(HeadString, [Head1]),
+						  decode_list(Tail, TailString),
+						  string_concat(HeadString, TailString, R).                       
+				
+							
+is_number_list([Head|_]):- is_number_char(Head).							
+
+/*
+create_string_repeat(+N, +Char, -String).
+  is true if String unify with String with following format:
+  create_string_repeat(3, 'W', String).
+  String = "WWW"
+*/
+
+create_string_repeat(1, Char, R):- string_chars(R, [Char]).
+create_string_repeat(N, Char, R):- N > 1, N2 is N-1,
+  create_string_repeat(N2, Char, StringTail),
+  string_chars(StringHead, [Char]),
+  string_concat(StringHead, StringTail, R).
 
 
