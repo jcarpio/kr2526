@@ -23,7 +23,7 @@ abbreviate(Sentence, Acronym).
 abbreviate(String, [Char|R2]):- string_chars(String, List), 
    remove_repetitions(List, [Head|List2]), \+ blank(Head),
    to_upper(Head, R), char_code(Char, R),
-   abbreviate_list(List2, R2).
+   abbreviate_list([Head|List2], R2).
    
 abbreviate(String, R2):- string_chars(String, List), 
    remove_repetitions(List, [Head|List2]), blank(Head),
@@ -49,10 +49,14 @@ abbreviate_list(List, R3):-
   to_upper(Elem2, R), char_code(Char, R),
   append(R1, [Char|R2], R3).
   
-abbreviate_list([Head|Tail], [Char]):- no_blank([Head|Tail]), to_upper(Head, R), char_code(Char, R).
+abbreviate_list(List, []):- no_blank(List).
 
 no_blank([]).
 no_blank([Elem]):- \+ blank(Elem).
 no_blank([Head|Tail]):- \+ blank(Head), no_blank(Tail).
 
+special_chars('-').
+special_chars('_').
+
+  
   
