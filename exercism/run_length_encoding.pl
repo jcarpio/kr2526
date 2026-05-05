@@ -145,3 +145,8 @@ create_string_repeat(N, Char, R):- N > 1, N2 is N-1,
   string_concat(StringHead, StringTail, R).
 
 
+
+
+
+
+
