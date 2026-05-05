@@ -9,7 +9,12 @@ create_bt(+List, -Tree)
 */
 
 
-create_bt
+create_bt([], nil).
+create_bt([Head|List], a(RLeft, RRight) ):-
+  length(List, L), Div is L div 2,
+  length(Left, Div),
+  append(Left, Right, List),
+  create_bt(Left, RLeft), create_bt(Right, RRight).
 
 
 
