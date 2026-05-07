@@ -1,12 +1,4 @@
 
-num_zeros("black", B, N):-
-  color_code(B, Code), N is Code + 1.
- 
-num_zeros(A, B, N):-
-  A \= "black",
-  color_code(B, N).
-
-
 value([Head1, Head2, Head3|_], R):- 
   color_code(Head1, Code1),
   color_code(Head2, Code2),
