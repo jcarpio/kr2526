@@ -1,33 +1,46 @@
 
+num_zeros("black", B, N):-
+  color_code(B, Code), N is Code + 1.
+ 
+num_zeros(A, B, N):-
+  A \= "black",
+  color_code(B, N).
+
+
 value([Head1, Head2, Head3|_], R):- 
   color_code(Head1, Code1),
   color_code(Head2, Code2),
   color_code(Head3, Code3),
-  Code3 =< 1,
   R is (Code1 * 10  + Code2) * 10 ^ Code3.
 
-value([Head1, Head2, Head3|_], R):- 
-  color_code(Head1, Code1),
-  color_code(Head2, Code2),
-  color_code(Head3, Code3),
-  Code3 > 1,
-  R is (Code1 * 10  + Code2).  
 
-label([Head1, Head2, Head3|_], R2):- value([Head1, Head2, Head3|_], R), 
+label([Head1, Head2, Head3|_], R2):- 
+   value([Head1, Head2, Head3|_], R), 
+   R < 1000,
    number_string(R, StringR), 
-   color_code(Head3, Code3),
-   sufix_string(Code3, Sufix),
-   string_concat(StringR, Sufix, R2).  
+   string_concat(StringR, " ohms", R2).  
 
-sufix_string(0, " ohms").
-sufix_string(1, " ohms").
-sufix_string(2, " kiloohms").
-sufix_string(3, " kiloohms").
-sufix_string(4, " kiloohms").
-sufix_string(5, " megaohms").
-sufix_string(6, " megaohms").
-sufix_string(7, " gigaohms").
-sufix_string(8, " gigaohms").
+
+label([Head1, Head2, Head3|_], R3):- 
+   value([Head1, Head2, Head3|_], R), 
+   R >= 1000, R < 1000000,
+   R2 is R / 1000,
+   number_string(R2, StringR), 
+   string_concat(StringR, " kiloohms", R3).  
+   
+label([Head1, Head2, Head3|_], R3):- 
+   value([Head1, Head2, Head3|_], R), 
+   R >= 1000000, R < 1000000000,
+   R2 is R / 1000000,
+   number_string(R2, StringR), 
+   string_concat(StringR, " megaohms", R3).     
+
+label([Head1, Head2, Head3|_], R3):- 
+   value([Head1, Head2, Head3|_], R), 
+   R >= 1000000000, R < 1000000000000,
+   R2 is R / 1000000000,
+   number_string(R2, StringR), 
+   string_concat(StringR, " gigaohms", R3).
 
 
 color_code("black", 0).
