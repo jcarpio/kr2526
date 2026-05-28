@@ -1,0 +1,18 @@
+
+
+Timetabling
+
+1. Get all requirements -> setof( req( , , ,N), class_subject_teacher_times( , , , ), Rs). 
+2. Attach slot list to each requirement -> maplist(req_with_slots, Rs, Qs).
+   req_with_slots(R, R-Slots) :- R = req(_,_,_,N), length(Slots, N). 
+3. Flat the Irregular Matrix of Requirements and define the domine for variables from 0 to SPW-1 ->
+4. Apply restrictions for lines (for subject)
+   4.1 All numbers in slot have to be strictly ascending
+   4.2 The correspoding number to integer division of slot number 
+       divided by SPD have to be strictly ascending.
+5. Apply restrictions for Teachers
+   we have to filter all requirements for a teacher. We have to check if all slot numbers 
+   for a teacher have to be all_different
+6. Apply restrictions for Classes
+   we have to filter all requirements for a Class. We have to check if all slot numbers 
+   for a Class have to be all_different
