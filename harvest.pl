@@ -140,7 +140,7 @@ harvest_day_var(Transit, batch(_Id, Mat, _Yield), Day) :-
 %  For every distinct possible harvest day D:
 %    sum of yields of batches whose HarvestDay = D  #=<  DailyCap
 %
-%  We use reification (#<=>) to express "batch i is harvested on D".
+%  We use reification (#<==>) to express "batch i is harvested on D".
 
 daily_capacity_constraints(Batches, HarvestDays, DailyCap) :-
     % Collect all possible harvest days (ground, from data)
@@ -157,8 +157,7 @@ one_day_cap(Batches, HarvestDays, DailyCap, Day) :-
 
 yield_on_day(Day, batch(_Id, _Mat, Yield)-HD, Contribution) :-
     % Reified: Contribution = Yield if HD=Day, else 0
-    HD #= Day,
-    Day	#=< B,
+    (HD #= Day) #<==> B,
     Contribution #= B * Yield.
 
 
@@ -174,8 +173,7 @@ delivery_constraint(Batches, HarvestDays, Transit, ord(DD, Qty)) :-
 
 yield_by_cutoff(Cutoff, batch(_Id, _Mat, Yield)-HD, Contribution) :-
     % Reified: harvested on or before Cutoff?
-    HD #=< Cutoff, 
-	Cutoff #=< B,
+    (HD #=< Cutoff) #<==> B,
     Contribution #= B * Yield.
 
 
